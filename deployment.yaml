@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Cloud Formation demo
+Parameters:
+  Environment:
+    Description: Environment Name
+    Type: String
+Resources: 
+  lamdafunctioniamrole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Path: 
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: lambda.amazonaws.com
+              Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: lambda-with-sqs-cloud-logs
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: '*'
+  lambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Description: Demo Lamdba
+      FunctionName: !Sub 'demo-lambda-with-sqs${Environment}'
+      Handler: 'LambdaWithSQS::LambdaWithSQS.Function::FunctionHandler'
+      MemorySize: 128
+      Role: !GetAtt lamdafunctioniamrole.Arn
+      Runtime: dotnet8
+      Timeout: 30
+      Environment:
+        Variables:
+          key1: value1
+      Code:
+        S3Bucket: lambdawithsqs-packages
+        S3Key: lambdawithsqs.zip
+      Tags:
+        - Key: keyname
+          Value: value
