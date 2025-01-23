@@ -56,10 +56,12 @@ jobs:
     needs: build
 
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-         name: lambda
-         path: artifact
+          name: lambda
+          path: artifact
+      - name: Display structure of downloaded files
+        run: ls -R artifact
          
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
