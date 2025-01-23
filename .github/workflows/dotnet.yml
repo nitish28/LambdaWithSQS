@@ -75,4 +75,4 @@ jobs:
         with:
           name: lamda-with-sqs
           template: artifact/deployment.yaml
-          parameter-overrides: "Enviornment=-Test"
+          parameter-overrides: "Environment=-Test" 
